@@ -48,7 +48,7 @@ cd Real-Time-Data-Processing-System-for-Weather-Monitoring
 
 Step 2: Select the interpreter as python 3.10.0(64-bit)in VScode/other Code editor.
 
-Step 3:Use Run Code button Or Open terminal run command:
+Step 3:Use Run Code button Or Open terminal run command after open app.py file:
 ```bash
 Python app.py
 ```
