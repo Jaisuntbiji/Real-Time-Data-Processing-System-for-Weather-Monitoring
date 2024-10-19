@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Weather Monitoring System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Real-Time Weather Monitoring System</h1>
+        <!-- Button for navigating to the Daily Weather Summary page -->
+        <div id="summary-button" style="margin-top: 20px;">
+            <a href="/daily_summary">
+                <button class="btn">View Daily Weather Summary</button>
+            </a>
+        </div>
+        <div id="weather-info">
+            <h2>Current Weather</h2>
+            <div id="weather-data">
+                {% for city, data in weather_data.items() %}
+                <div class="weather-card">
+                    <h3>{{ city }}</h3>
+                    <p>Main Condition: <strong>{{ data.main }}</strong></p>
+                    <p>Current Temperature: <strong>{{ data.temp }} °C</strong></p>
+                    <p>Feels Like: <strong>{{ data.feels_like }} °C</strong></p>
+                    <p>Last Updated: <strong>{{ data.dt }}</strong></p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- Chart Section -->
+        <div id="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // Prepare data for charts
+        const weatherData = {{ weather_data | tojson }};
+        const cities = Object.keys(weatherData);
+        const temperatures = cities.map(city => weatherData[city].temp);
+
+        // Create the temperature chart
+        const ctx = document.getElementById('temperatureChart').getContext('2d');
+        const temperatureChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: cities,
+                datasets: [{
+                    label: 'Current Temperature (°C)',
+                    data: temperatures,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Current Temperature by City'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
